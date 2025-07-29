@@ -79,9 +79,7 @@ local function fetchMetadata()
 end
 
 local function downloadFile(path, destination)
-    local url = string.format("https://raw.githubusercontent.com/%s/%s/%s", 
-        metadata.repository, metadata.branch, path)
-    
+    local url = string.format("https://raw.githubusercontent.com/%s/%s/%s", repo, branch, path)
     log("Downloading " .. path .. "...", colors.gray)
     
     local response = http.get(url)

@@ -1,7 +1,7 @@
 {
     "version": "1.0.0",
     "repository": "cwill2151/cc-excavate",
-    "branch": "main",
+    "branch": "master",
     "systems": {
         "supervisor": {
             "name": "Excavation Supervisor",
