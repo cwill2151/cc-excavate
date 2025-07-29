@@ -84,71 +84,84 @@ local function measureArea()
 end
 
 local function scanForChests()
-    log("Scanning for chests...", colors.cyan)
+    log("Scanning for chestss...", colors.cyan)
     
-    local radius = config.chest_pool.scan_radius
+    local max_tries = config.chest_pool.scan_radius
     local startPos = navigation.getPosition()
     
-    -- Scan fuel chests at y=1 (facing north from origin)
     log("  Scanning fuel chests at y=1...", colors.gray)
     navigation.moveTo(0, config.chest_pool.default_fuel_height, 0, false)
-    navigation.turnTo(0) -- Face north
-    
-    -- Scan the fuel chest row (should be directly north)
-    for z = 1, radius do
-        local success, block = turtle.inspect()
+    navigation.turnTo(2)
+
+    for i = 1, max_tries do
+        success, block = turtle.inspect()
         if success and block.name == "minecraft:chest" then
-            local chestLocation = {
-                x = 0,
+            local chest = {
+                x = startPos.x,
                 y = config.chest_pool.default_fuel_height,
-                z = z,
+                z = startPos.z + i,
                 in_use = false,
                 reserved_by = nil,
                 reserved_until = 0
             }
-            table.insert(chestPool.fuel, chestLocation)
-            log(string.format("  Found fuel chest at (0,%d,%d)",
-                config.chest_pool.default_fuel_height, z), colors.green)
+            table.insert(chestPool.fuel, chest)
+            log(string.format("  Found fuel chest at (%d,%d,%d)", chest.x, chest.y, chest.z), colors.lime)
+        else
+            log("  No more fuel chests found", colors.gray)
+            break
         end
-        
+
+        navigation.turnRight()
         if not navigation.forward() then
-            break -- Hit a barrier or obstacle
+            break
         end
+
+        navigation.turnLeft()
     end
-    
-    -- Return to origin and scan deposit chests at y=2
-    log("  Scanning deposit chests at y=2...", colors.gray)
+
     navigation.moveTo(0, config.chest_pool.default_deposit_height, 0, false)
-    
-    -- Scan the deposit chest grid
-    for x = -radius, radius do
-        for z = 1, radius do -- Start from z=1 (north of origin)
-            navigation.moveTo(x, config.chest_pool.default_deposit_height, z, false)
-            
-            -- Check if there's a chest at this position by looking down
-            local success, block = turtle.inspectDown()
-            if success and block.name == "minecraft:chest" then
-                local chestLocation = {
-                    x = x,
-                    y = config.chest_pool.default_deposit_height,
-                    z = z,
-                    in_use = false,
-                    reserved_by = nil,
-                    reserved_until = 0
-                }
-                table.insert(chestPool.deposit, chestLocation)
-                log(string.format("  Found deposit chest at (%d,%d,%d)",
-                    x, config.chest_pool.default_deposit_height, z), colors.green)
-            end
+    navigation.turnTo(2)
+
+    log("  Scanning deposit chests at y=1...", colors.gray)
+    for i = 1, max_tries do
+        success, block = turtle.inspect()
+        if success and block.name == "minecraft:chest" then
+            local chest = {
+                x = startPos.x,
+                y = config.chest_pool.default_deposit_height,
+                z = startPos.z + i,
+                in_use = false,
+                reserved_by = nil,
+                reserved_until = 0
+            }
+            table.insert(chestPool.deposit, chest)
+            log(string.format("  Found deposit chest at (%d,%d,%d)", chest.x, chest.y, chest.z), colors.lime)
+        else
+            log("  No more deposit chests found", colors.gray)
+            break
         end
+
+        navigation.turnRight()
+        if not navigation.forward() then
+            break
+        end
+
+        navigation.turnLeft()
     end
-    
-    -- Return to starting position
+
+    if #chestPool.fuel == 0 then
+        log("WARNING: No fuel chests found", colors.orange)
+    end
+
+    if #chestPool.deposit == 0 then
+        log("ERROR: No deposit chests found", colors.red)
+    end
+
+    log(string.format("Found %d fuel chests and %d deposit chests", 
+        #chestPool.fuel, #chestPool.deposit), colors.lime)
+
     navigation.moveTo(startPos.x, startPos.y, startPos.z, false)
     navigation.turnTo(0)
-    
-    log(string.format("Found %d deposit chests, %d fuel chests",
-        #chestPool.deposit, #chestPool.fuel), colors.lime)
 end
 
 local function createTaskQueue()
