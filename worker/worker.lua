@@ -1,10 +1,10 @@
 ---@diagnostic disable: undefined-global, undefined-field, lowercase-global
 
 local pretty = require("cc.pretty")
-local config = require("excavation.common.config")
-local protocol = require("excavation.common.protocol")
-local navigation = require("excavation.common.navigation")
-local inventory = require("excavation.common.inventory")
+local config = require("common.config")
+local protocol = require("common.protocol")
+local navigation = require("common.navigation")
+local inventory = require("common.inventory")
 
 local modem = peripheral.find("modem") or error("No modem attached")
 local workerId = os.getComputerID()
