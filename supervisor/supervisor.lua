@@ -1,5 +1,7 @@
 ---@diagnostic disable: undefined-global, undefined-field, lowercase-global
 
+require("/initenv").init_env()
+
 local pretty = require("cc.pretty")
 local config = require("excavate-common.config")
 local protocol = require("excavate-common.protocol")
