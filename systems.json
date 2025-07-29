@@ -60,15 +60,15 @@
             "requirements": ["modem", "turtle"]
         }
     },
-    "cleanup": {
-        "directories": ["supervisor", "worker", "common"],
-        "files": ["startup.lua"],
-        "patterns": ["excavation_stats_*.txt"]
-    },
     "files": [
         {
             "source": "initenv.lua",
             "destination": "initenv.lua"
         }
-    ]
+    ],
+    "cleanup": {
+        "directories": ["supervisor", "worker", "common"],
+        "files": ["startup.lua", "initenv.lua"],
+        "patterns": ["excavation_stats_*.txt"]
+    }
 }

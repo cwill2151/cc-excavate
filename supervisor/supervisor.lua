@@ -88,44 +88,75 @@ local function scanForChests()
     
     local radius = config.chest_pool.scan_radius
     local startPos = navigation.getPosition()
+    local foundChests = {} -- Track found chests to avoid duplicates
     
-    for y = 1, radius do
+    -- Helper function to check if chest already found
+    local function isChestAlreadyFound(x, y, z)
+        local key = string.format("%d,%d,%d", x, y, z)
+        if foundChests[key] then
+            return true
+        end
+        foundChests[key] = true
+        return false
+    end
+    
+    -- Scan specific heights based on your layout
+    local heightsToScan = {
+        config.chest_pool.default_fuel_height,    -- y=1 for fuel chests
+        config.chest_pool.default_deposit_height  -- y=2 for deposit chests
+    }
+    
+    for _, y in ipairs(heightsToScan) do
         for x = -radius, radius do
             for z = -radius, radius do
-                if x ~= 0 or z ~= 0 then
+                if x ~= 0 or z ~= 0 then -- Skip origin position
                     navigation.moveTo(x, y, z, false)
                     
+                    -- Check in all 4 directions for chests
                     for dir = 0, 3 do
                         navigation.turnTo(dir)
                         local success, block = turtle.inspect()
                         
                         if success and block.name == "minecraft:chest" then
-                            local chestPos = navigation.getPosition()
+                            local turtlePos = navigation.getPosition()
                             local facing = navigation.getFacing()
+                            
+                            -- Calculate where the chest actually is (in front of turtle)
                             local offset = {
-                                [0] = {x = 0, z = 1},
-                                [1] = {x = 1, z = 0},
-                                [2] = {x = 0, z = -1},
-                                [3] = {x = -1, z = 0}
+                                [0] = {x = 0, z = 1},   -- North: +Z
+                                [1] = {x = 1, z = 0},   -- East: +X
+                                [2] = {x = 0, z = -1},  -- South: -Z
+                                [3] = {x = -1, z = 0}   -- West: -X
                             }
                             
-                            local chestLocation = {
-                                x = chestPos.x + offset[facing].x,
-                                y = chestPos.y,
-                                z = chestPos.z + offset[facing].z,
-                                in_use = false,
-                                reserved_by = nil,
-                                reserved_until = 0
-                            }
+                            local chestX = turtlePos.x + offset[facing].x
+                            local chestY = turtlePos.y
+                            local chestZ = turtlePos.z + offset[facing].z
                             
-                            if y == config.chest_pool.default_fuel_height then
-                                table.insert(chestPool.fuel, chestLocation)
-                                log(string.format("  Found fuel chest at (%d,%d,%d)", 
-                                    chestLocation.x, chestLocation.y, chestLocation.z), colors.green)
-                            else
-                                table.insert(chestPool.deposit, chestLocation)
-                                log(string.format("  Found deposit chest at (%d,%d,%d)", 
-                                    chestLocation.x, chestLocation.y, chestLocation.z), colors.green)
+                            -- Skip if we already found this chest
+                            if not isChestAlreadyFound(chestX, chestY, chestZ) then
+                                local chestLocation = {
+                                    x = chestX,
+                                    y = chestY,
+                                    z = chestZ,
+                                    in_use = false,
+                                    reserved_by = nil,
+                                    reserved_until = 0
+                                }
+                                
+                                -- Classify chest by height
+                                if chestY == config.chest_pool.default_fuel_height then
+                                    table.insert(chestPool.fuel, chestLocation)
+                                    log(string.format("  Found fuel chest at (%d,%d,%d)",
+                                        chestX, chestY, chestZ), colors.green)
+                                elseif chestY == config.chest_pool.default_deposit_height then
+                                    table.insert(chestPool.deposit, chestLocation)
+                                    log(string.format("  Found deposit chest at (%d,%d,%d)",
+                                        chestX, chestY, chestZ), colors.green)
+                                else
+                                    log(string.format("  Found chest at unexpected height (%d,%d,%d)",
+                                        chestX, chestY, chestZ), colors.orange)
+                                end
                             end
                         end
                     end
@@ -137,7 +168,7 @@ local function scanForChests()
     navigation.moveTo(startPos.x, startPos.y, startPos.z, false)
     navigation.turnTo(0)
     
-    log(string.format("Found %d deposit chests, %d fuel chests", 
+    log(string.format("Found %d deposit chests, %d fuel chests",
         #chestPool.deposit, #chestPool.fuel), colors.lime)
 end
 
