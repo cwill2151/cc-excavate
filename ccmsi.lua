@@ -44,7 +44,7 @@ local function loadSettings()
         return config
     end
     return {
-        metadataUrl = "https://raw.githubusercontent.com/" .. repo .. "/" .. branch .. "/systems.json",
+        metadataUrl = string.format("https://raw.githubusercontent.com/%s/%s/systems.json", repo, branch)
     }
 end
 
