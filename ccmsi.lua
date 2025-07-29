@@ -117,7 +117,7 @@ local function createStartupScript(systemName)
     
     local content = string.format([[
 -- Auto-generated startup script for %s
-exit_code = shell.execute("%s")
+exit_code = shell.execute("%s.lua")
 if exit_code ~= 0 then
     print("Startup script failed with exit code " .. exit_code)
 end
