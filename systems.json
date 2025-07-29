@@ -8,6 +8,10 @@
             "description": "Manages task distribution and coordinates worker turtles",
             "files": [
                 {
+                    "source": "initenv.lua",
+                    "destination": "initenv.lua"
+                },
+                {
                     "source": "supervisor/supervisor.lua",
                     "destination": "supervisor/supervisor.lua"
                 },
