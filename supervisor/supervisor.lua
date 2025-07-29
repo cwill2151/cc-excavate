@@ -84,7 +84,7 @@ local function measureArea()
 end
 
 local function scanForChests()
-    log("Scanning for chests...", colors.cyan)
+    log("Scanning for chestsa...", colors.cyan)
     
     local radius = config.chest_pool.scan_radius
     local startPos = navigation.getPosition()
