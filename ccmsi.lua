@@ -208,7 +208,7 @@ end
 local function updateSelf()
     printHeader("Updating ccmsi")
     
-    local updateUrl = "https://raw.githubusercontent.com/cwill2151/cc-excavate/main/ccmsi.lua"
+    local updateUrl = string.format("https://raw.githubusercontent.com/%s/%s/ccmsi.lua", repo, branch)
     
     local response = http.get(updateUrl)
     if not response then
