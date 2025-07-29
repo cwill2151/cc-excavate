@@ -84,87 +84,66 @@ local function measureArea()
 end
 
 local function scanForChests()
-    log("Scanning for chestsa...", colors.cyan)
+    log("Scanning for chests...", colors.cyan)
     
     local radius = config.chest_pool.scan_radius
     local startPos = navigation.getPosition()
-    local foundChests = {} -- Track found chests to avoid duplicates
     
-    -- Helper function to check if chest already found
-    local function isChestAlreadyFound(x, y, z)
-        local key = string.format("%d,%d,%d", x, y, z)
-        if foundChests[key] then
-            return true
+    -- Scan fuel chests at y=1 (facing north from origin)
+    log("  Scanning fuel chests at y=1...", colors.gray)
+    navigation.moveTo(0, config.chest_pool.default_fuel_height, 0, false)
+    navigation.turnTo(0) -- Face north
+    
+    -- Scan the fuel chest row (should be directly north)
+    for z = 1, radius do
+        local success, block = turtle.inspect()
+        if success and block.name == "minecraft:chest" then
+            local chestLocation = {
+                x = 0,
+                y = config.chest_pool.default_fuel_height,
+                z = z,
+                in_use = false,
+                reserved_by = nil,
+                reserved_until = 0
+            }
+            table.insert(chestPool.fuel, chestLocation)
+            log(string.format("  Found fuel chest at (0,%d,%d)",
+                config.chest_pool.default_fuel_height, z), colors.green)
         end
-        foundChests[key] = true
-        return false
+        
+        if not navigation.forward() then
+            break -- Hit a barrier or obstacle
+        end
     end
     
-    -- Scan specific heights based on your layout
-    local heightsToScan = {
-        config.chest_pool.default_fuel_height,    -- y=1 for fuel chests
-        config.chest_pool.default_deposit_height  -- y=2 for deposit chests
-    }
+    -- Return to origin and scan deposit chests at y=2
+    log("  Scanning deposit chests at y=2...", colors.gray)
+    navigation.moveTo(0, config.chest_pool.default_deposit_height, 0, false)
     
-    for _, y in ipairs(heightsToScan) do
-        for x = -radius, radius do
-            for z = -radius, radius do
-                if x ~= 0 or z ~= 0 then -- Skip origin position
-                    navigation.moveTo(x, y, z, false)
-                    
-                    -- Check in all 4 directions for chests
-                    for dir = 0, 3 do
-                        navigation.turnTo(dir)
-                        local success, block = turtle.inspect()
-                        
-                        if success and block.name == "minecraft:chest" then
-                            local turtlePos = navigation.getPosition()
-                            local facing = navigation.getFacing()
-                            
-                            -- Calculate where the chest actually is (in front of turtle)
-                            local offset = {
-                                [0] = {x = 0, z = 1},   -- North: +Z
-                                [1] = {x = 1, z = 0},   -- East: +X
-                                [2] = {x = 0, z = -1},  -- South: -Z
-                                [3] = {x = -1, z = 0}   -- West: -X
-                            }
-                            
-                            local chestX = turtlePos.x + offset[facing].x
-                            local chestY = turtlePos.y
-                            local chestZ = turtlePos.z + offset[facing].z
-                            
-                            -- Skip if we already found this chest
-                            if not isChestAlreadyFound(chestX, chestY, chestZ) then
-                                local chestLocation = {
-                                    x = chestX,
-                                    y = chestY,
-                                    z = chestZ,
-                                    in_use = false,
-                                    reserved_by = nil,
-                                    reserved_until = 0
-                                }
-                                
-                                -- Classify chest by height
-                                if chestY == config.chest_pool.default_fuel_height then
-                                    table.insert(chestPool.fuel, chestLocation)
-                                    log(string.format("  Found fuel chest at (%d,%d,%d)",
-                                        chestX, chestY, chestZ), colors.green)
-                                elseif chestY == config.chest_pool.default_deposit_height then
-                                    table.insert(chestPool.deposit, chestLocation)
-                                    log(string.format("  Found deposit chest at (%d,%d,%d)",
-                                        chestX, chestY, chestZ), colors.green)
-                                else
-                                    log(string.format("  Found chest at unexpected height (%d,%d,%d)",
-                                        chestX, chestY, chestZ), colors.orange)
-                                end
-                            end
-                        end
-                    end
-                end
+    -- Scan the deposit chest grid
+    for x = -radius, radius do
+        for z = 1, radius do -- Start from z=1 (north of origin)
+            navigation.moveTo(x, config.chest_pool.default_deposit_height, z, false)
+            
+            -- Check if there's a chest at this position by looking down
+            local success, block = turtle.inspectDown()
+            if success and block.name == "minecraft:chest" then
+                local chestLocation = {
+                    x = x,
+                    y = config.chest_pool.default_deposit_height,
+                    z = z,
+                    in_use = false,
+                    reserved_by = nil,
+                    reserved_until = 0
+                }
+                table.insert(chestPool.deposit, chestLocation)
+                log(string.format("  Found deposit chest at (%d,%d,%d)",
+                    x, config.chest_pool.default_deposit_height, z), colors.green)
             end
         end
     end
     
+    -- Return to starting position
     navigation.moveTo(startPos.x, startPos.y, startPos.z, false)
     navigation.turnTo(0)
     
