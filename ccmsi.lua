@@ -1,7 +1,10 @@
 ---@diagnostic disable: undefined-global, undefined-field, lowercase-global
 
 local args = {...}
-local version = "2.0.0"
+local version = "1.0.0"
+local repo = "cwill2151/cc-excavate"
+local branch = "master"
+
 local metadataUrl = nil
 local metadata = nil
 
@@ -22,7 +25,7 @@ end
 local function printHeader(text)
     term.setTextColor(colors.lime)
     print("+---------------------------------------+")
-    print("|" .. string.format("%^39s", text) .. "|")
+    print("|" .. string.format("%39s", text) .. "|")
     print("+---------------------------------------+")
     term.setTextColor(colors.white)
 end
@@ -41,7 +44,7 @@ local function loadSettings()
         return config
     end
     return {
-        metadataUrl = "https://raw.githubusercontent.com/cwill2151/cc-excavate/main/systems.json"
+        metadataUrl = "https://raw.githubusercontent.com/" .. repo .. "/" .. branch .. "/systems.json",
     }
 end
 
