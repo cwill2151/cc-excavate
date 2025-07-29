@@ -3,10 +3,10 @@
 require("/initenv").init_env()
 
 local pretty = require("cc.pretty")
-local config = require("excavate-common.config")
-local protocol = require("excavate-common.protocol")
-local navigation = require("excavate-common.navigation")
-local inventory = require("excavate-common.inventory")
+local config = require("common.config")
+local protocol = require("common.protocol")
+local navigation = require("common.navigation")
+local inventory = require("common.inventory")
 
 local modem = peripheral.find("modem") or error("No modem attached")
 local supervisorId = os.getComputerID()

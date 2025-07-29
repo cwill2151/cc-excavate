@@ -76,7 +76,7 @@ Worker 1    Worker 2   Worker 3   Worker N
 
 ## Configuration
 
-Edit `excavation/excavate-common/config.lua` to customize:
+Edit `excavation/common/config.lua` to customize:
 - Barrier block type
 - Maximum mining depth
 - Fuel thresholds
@@ -111,7 +111,7 @@ Edit `excavation/excavate-common/config.lua` to customize:
 /excavation/
   supervisor.lua       # Supervisor program
   worker.lua          # Worker program
-  excavate-common/
+  common/
     config.lua        # Configuration settings
     protocol.lua      # Communication protocol
     navigation.lua    # Movement and collision avoidance

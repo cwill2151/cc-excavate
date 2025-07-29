@@ -12,20 +12,20 @@
                     "destination": "supervisor/supervisor.lua"
                 },
                 {
-                    "source": "excavate-common/config.lua",
-                    "destination": "excavate-common/config.lua"
+                    "source": "common/config.lua",
+                    "destination": "common/config.lua"
                 },
                 {
-                    "source": "excavate-common/protocol.lua",
-                    "destination": "excavate-common/protocol.lua"
+                    "source": "common/protocol.lua",
+                    "destination": "common/protocol.lua"
                 },
                 {
-                    "source": "excavate-common/navigation.lua",
-                    "destination": "excavate-common/navigation.lua"
+                    "source": "common/navigation.lua",
+                    "destination": "common/navigation.lua"
                 },
                 {
-                    "source": "excavate-common/inventory.lua",
-                    "destination": "excavate-common/inventory.lua"
+                    "source": "common/inventory.lua",
+                    "destination": "common/inventory.lua"
                 }
             ],
             "startup": "supervisor/supervisor",
@@ -40,20 +40,20 @@
                     "destination": "worker/worker.lua"
                 },
                 {
-                    "source": "excavate-common/config.lua",
-                    "destination": "excavate-common/config.lua"
+                    "source": "common/config.lua",
+                    "destination": "common/config.lua"
                 },
                 {
-                    "source": "excavate-common/protocol.lua",
-                    "destination": "excavate-common/protocol.lua"
+                    "source": "common/protocol.lua",
+                    "destination": "common/protocol.lua"
                 },
                 {
-                    "source": "excavate-common/navigation.lua",
-                    "destination": "excavate-common/navigation.lua"
+                    "source": "common/navigation.lua",
+                    "destination": "common/navigation.lua"
                 },
                 {
-                    "source": "excavate-common/inventory.lua",
-                    "destination": "excavate-common/inventory.lua"
+                    "source": "common/inventory.lua",
+                    "destination": "common/inventory.lua"
                 }
             ],
             "startup": "worker/worker",
@@ -61,7 +61,7 @@
         }
     },
     "cleanup": {
-        "directories": ["supervisor", "worker", "excavate-common"],
+        "directories": ["supervisor", "worker", "common"],
         "files": ["startup.lua"],
         "patterns": ["excavation_stats_*.txt"]
     },

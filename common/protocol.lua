@@ -1,6 +1,6 @@
 ---@diagnostic disable: undefined-global, undefined-field, lowercase-global
 
-local config = require("excavate-common.config")
+local config = require("common.config")
 
 local protocol = {}
 
