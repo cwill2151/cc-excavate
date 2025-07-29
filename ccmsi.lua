@@ -164,9 +164,20 @@ local function installSystem(systemName)
     end
     
     local success = true
-    for _, file in ipairs(system.files) do
-        if not downloadFile(file.source, file.destination) then
-            success = false
+    
+    if metadata.files then
+        for _, file in ipairs(metadata.files) do
+            if not downloadFile(file.source, file.destination) then
+                success = false
+            end
+        end
+    end
+    
+    if system.files then
+        for _, file in ipairs(system.files) do
+            if not downloadFile(file.source, file.destination) then
+                success = false
+            end
         end
     end
     
@@ -297,6 +308,7 @@ local function main()
     elseif command == "seturl" then
         log("Please provide a URL", colors.red)
     else
+        cleanInstallation()
         installSystem(command)
     end
 end

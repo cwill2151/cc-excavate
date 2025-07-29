@@ -64,5 +64,11 @@
         "directories": ["supervisor", "worker", "excavate-common"],
         "files": ["startup.lua"],
         "patterns": ["excavation_stats_*.txt"]
-    }
+    },
+    "files": [
+        {
+            "source": "initenv.lua",
+            "destination": "initenv.lua"
+        }
+    ]
 }
