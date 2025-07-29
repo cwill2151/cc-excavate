@@ -1,0 +1,68 @@
+{
+    "version": "1.0.0",
+    "repository": "cwill2151/cc-excavate",
+    "branch": "main",
+    "systems": {
+        "supervisor": {
+            "name": "Excavation Supervisor",
+            "description": "Manages task distribution and coordinates worker turtles",
+            "files": [
+                {
+                    "source": "excavation/supervisor.lua",
+                    "destination": "excavation/supervisor.lua"
+                },
+                {
+                    "source": "excavation/common/config.lua",
+                    "destination": "excavation/common/config.lua"
+                },
+                {
+                    "source": "excavation/common/protocol.lua",
+                    "destination": "excavation/common/protocol.lua"
+                },
+                {
+                    "source": "excavation/common/navigation.lua",
+                    "destination": "excavation/common/navigation.lua"
+                },
+                {
+                    "source": "excavation/common/inventory.lua",
+                    "destination": "excavation/common/inventory.lua"
+                }
+            ],
+            "startup": "excavation/supervisor",
+            "requirements": ["modem"]
+        },
+        "worker": {
+            "name": "Excavation Worker",
+            "description": "Executes mining tasks assigned by supervisor",
+            "files": [
+                {
+                    "source": "excavation/worker.lua",
+                    "destination": "excavation/worker.lua"
+                },
+                {
+                    "source": "excavation/common/config.lua",
+                    "destination": "excavation/common/config.lua"
+                },
+                {
+                    "source": "excavation/common/protocol.lua",
+                    "destination": "excavation/common/protocol.lua"
+                },
+                {
+                    "source": "excavation/common/navigation.lua",
+                    "destination": "excavation/common/navigation.lua"
+                },
+                {
+                    "source": "excavation/common/inventory.lua",
+                    "destination": "excavation/common/inventory.lua"
+                }
+            ],
+            "startup": "excavation/worker",
+            "requirements": ["modem", "turtle"]
+        }
+    },
+    "cleanup": {
+        "directories": ["excavation"],
+        "files": ["startup.lua"],
+        "patterns": ["excavation_stats_*.txt"]
+    }
+}
